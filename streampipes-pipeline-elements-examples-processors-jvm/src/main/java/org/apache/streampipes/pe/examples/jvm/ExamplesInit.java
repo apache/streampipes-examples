@@ -30,17 +30,7 @@ import org.apache.streampipes.pe.examples.jvm.outputstrategy.CustomTransformOutp
 import org.apache.streampipes.pe.examples.jvm.outputstrategy.FixedOutputController;
 import org.apache.streampipes.pe.examples.jvm.outputstrategy.KeepOutputController;
 import org.apache.streampipes.pe.examples.jvm.outputstrategy.TransformOutputController;
-import org.apache.streampipes.pe.examples.jvm.staticproperty.CollectionExampleController;
-import org.apache.streampipes.pe.examples.jvm.staticproperty.MultiValueSelectionExampleController;
-import org.apache.streampipes.pe.examples.jvm.staticproperty.NaryMappingPropertyExampleController;
-import org.apache.streampipes.pe.examples.jvm.staticproperty.NumberParameterExampleController;
-import org.apache.streampipes.pe.examples.jvm.staticproperty.NumberParameterWithRangeExampleController;
-import org.apache.streampipes.pe.examples.jvm.staticproperty.RuntimeResolvableSingleValue;
-import org.apache.streampipes.pe.examples.jvm.staticproperty.SecretStaticPropertyExampleController;
-import org.apache.streampipes.pe.examples.jvm.staticproperty.SingleValueSelectionExampleController;
-import org.apache.streampipes.pe.examples.jvm.staticproperty.StaticPropertyAlternativesController;
-import org.apache.streampipes.pe.examples.jvm.staticproperty.TextParameterExampleController;
-import org.apache.streampipes.pe.examples.jvm.staticproperty.UnaryMappingPropertyExampleController;
+import org.apache.streampipes.pe.examples.jvm.staticproperty.*;
 
 public class ExamplesInit extends StandaloneModelSubmitter {
 
@@ -58,6 +48,7 @@ public class ExamplesInit extends StandaloneModelSubmitter {
             .add(new RuntimeResolvableSingleValue())
             .add(new StaticPropertyAlternativesController())
             .add(new SecretStaticPropertyExampleController())
+            .add(new CodeInputExampleController())
 
             .add(new AppendOutputController())
             .add(new CustomOutputController())
