@@ -23,7 +23,7 @@ public class CodeInputExampleController extends StandaloneEventProcessingDeclare
                     create()
                     .requiredProperty(EpRequirements.anyProperty())
                     .build())
-            .outputStrategy(OutputStrategies.keep())
+            .outputStrategy(OutputStrategies.userDefined())
             .supportedProtocols(SupportedProtocols.kafka())
             .supportedFormats(SupportedFormats.jsonFormat())
 
