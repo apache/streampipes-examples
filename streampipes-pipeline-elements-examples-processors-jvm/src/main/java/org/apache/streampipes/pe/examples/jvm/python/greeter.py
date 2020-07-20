@@ -36,7 +36,7 @@ class Greeter(EventProcessor):
 def main():
     # dict with processor id and processor class
     processors = {
-        'org.apache.streampipes.examples.python.processor': Greeter,
+        'org.apache.streampipes.examples.python.processor.greeter': Greeter,
     }
 
     Declarer.add(processors=processors)

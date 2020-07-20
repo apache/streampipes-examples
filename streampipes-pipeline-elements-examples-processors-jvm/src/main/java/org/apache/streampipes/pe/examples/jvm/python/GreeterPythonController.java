@@ -29,7 +29,7 @@ import org.apache.streampipes.wrapper.standalone.declarer.StandaloneExternalEven
 public class GreeterPythonController extends StandaloneExternalEventProcessingDeclarer<GreeterParameters> {
 
     private static final String GREETER_KEY = "greeter-key";
-    public static final String PROCESSOR_ID = "org.apache.streampipes.examples.python.processor";
+    public static final String PROCESSOR_ID = "org.apache.streampipes.examples.python.processor.greeter";
 
     @Override
     public DataProcessorDescription declareModel() {
