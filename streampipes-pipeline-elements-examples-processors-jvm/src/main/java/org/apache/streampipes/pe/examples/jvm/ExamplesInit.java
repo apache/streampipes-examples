@@ -46,9 +46,12 @@ public class ExamplesInit extends StandaloneModelSubmitter {
             .add(new MultiValueSelectionExampleController())
             .add(new CollectionExampleController())
             .add(new RuntimeResolvableSingleValue())
+            .add(new RuntimeResolvableAnyStaticPropertyController())
             .add(new StaticPropertyAlternativesController())
             .add(new SecretStaticPropertyExampleController())
             .add(new CodeInputExampleController())
+            .add(new ColorPickerExampleController())
+            .add(new CollectionMappingExample())
 
             .add(new AppendOutputController())
             .add(new CustomOutputController())
