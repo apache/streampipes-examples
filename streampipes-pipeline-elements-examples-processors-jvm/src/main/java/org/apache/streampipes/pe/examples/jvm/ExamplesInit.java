@@ -59,6 +59,7 @@ public class ExamplesInit extends StandaloneModelSubmitter {
             .add(new CustomTransformOutputController())
             .add(new TransformOutputController())
             .add(new KeepOutputController())
+            .add(new CollectionMappingGroupExample())
 
             .add(new ExampleExternalEngineController());
 
