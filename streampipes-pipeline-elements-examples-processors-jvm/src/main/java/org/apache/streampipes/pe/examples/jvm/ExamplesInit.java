@@ -30,6 +30,7 @@ import org.apache.streampipes.pe.examples.jvm.outputstrategy.CustomTransformOutp
 import org.apache.streampipes.pe.examples.jvm.outputstrategy.FixedOutputController;
 import org.apache.streampipes.pe.examples.jvm.outputstrategy.KeepOutputController;
 import org.apache.streampipes.pe.examples.jvm.outputstrategy.TransformOutputController;
+import org.apache.streampipes.pe.examples.jvm.requirements.NestedListRequirementsController;
 import org.apache.streampipes.pe.examples.jvm.staticproperty.*;
 
 public class ExamplesInit extends StandaloneModelSubmitter {
@@ -52,6 +53,7 @@ public class ExamplesInit extends StandaloneModelSubmitter {
             .add(new CodeInputExampleController())
             .add(new ColorPickerExampleController())
             .add(new CollectionMappingExample())
+            .add(new NestedListRequirementsController())
 
             .add(new AppendOutputController())
             .add(new CustomOutputController())
