@@ -1,4 +1,4 @@
-package org.apache.streampipes.pe.examples.jvm.python;/*
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,18 +15,23 @@ package org.apache.streampipes.pe.examples.jvm.python;/*
  * limitations under the License.
  *
  */
+package org.apache.streampipes.pe.examples.jvm.python;
 
+import com.google.gson.JsonObject;
+import org.apache.streampipes.commons.exceptions.SpRuntimeException;
 import org.apache.streampipes.model.graph.DataProcessorDescription;
-import org.apache.streampipes.model.graph.DataProcessorInvocation;
 import org.apache.streampipes.sdk.builder.ProcessingElementBuilder;
 import org.apache.streampipes.sdk.builder.StreamRequirementsBuilder;
-import org.apache.streampipes.sdk.extractor.ProcessingElementParameterExtractor;
 import org.apache.streampipes.sdk.helpers.*;
 import org.apache.streampipes.vocabulary.SO;
-import org.apache.streampipes.wrapper.standalone.ConfiguredExternalEventProcessor;
-import org.apache.streampipes.wrapper.standalone.declarer.StandaloneExternalEventProcessingDeclarer;
+import org.apache.streampipes.wrapper.context.EventProcessorRuntimeContext;
+import org.apache.streampipes.wrapper.standalone.ProcessorParams;
+import org.apache.streampipes.wrapper.standalone.StreamPipesExternalDataProcessor;
 
-public class GreeterPythonController extends StandaloneExternalEventProcessingDeclarer<GreeterParameters> {
+import java.util.HashMap;
+import java.util.Map;
+
+public class PythonGreeterProcessor extends StreamPipesExternalDataProcessor {
 
     private static final String GREETER_KEY = "greeter-key";
     public static final String PROCESSOR_ID = "org.apache.streampipes.examples.python.processor.greeter";
@@ -34,18 +39,12 @@ public class GreeterPythonController extends StandaloneExternalEventProcessingDe
     @Override
     public DataProcessorDescription declareModel() {
         return ProcessingElementBuilder.create(PROCESSOR_ID, "Python Greeter", "")
-                .requiredStream(StreamRequirementsBuilder.
-                        create()
-                        .requiredProperty(EpRequirements.anyProperty())
-                        .build())
-
+                .requiredStream(StreamRequirementsBuilder.any())
                 // create a simple text parameter
                 .requiredTextParameter(Labels.withId(GREETER_KEY), "greeting")
-
-                // Append greeting to event stream
+                // append greeting to event stream
                 .outputStrategy(OutputStrategies.append(
                         EpProperties.stringEp(Labels.empty(),"greeting", SO.Text)))
-
                 // NOTE: currently one Kafka transport protocol is supported
                 .supportedProtocols(SupportedProtocols.kafka())
                 .supportedFormats(SupportedFormats.jsonFormat())
@@ -53,12 +52,21 @@ public class GreeterPythonController extends StandaloneExternalEventProcessingDe
     }
 
     @Override
-    public ConfiguredExternalEventProcessor<GreeterParameters> onInvocation(DataProcessorInvocation graph, ProcessingElementParameterExtractor extractor) {
+    public void onInvocation(ProcessorParams parameters, EventProcessorRuntimeContext runtimeContext) throws SpRuntimeException {
 
-        // Extract the greeting value
-        String greeting = extractor.singleValueParameter(GREETER_KEY, String.class);
+        // extract static properties and add to map to build minimal invocation graph
+        Map<String, String> staticPropertyMap = new HashMap<>();
+        staticPropertyMap.put("greeting", parameters.extractor().singleValueParameter(GREETER_KEY, String.class));
 
-        // now the text parameter would be added to a parameter class (omitted for this example)
-        return new ConfiguredExternalEventProcessor<>(new GreeterParameters(graph, greeting), GreeterPython::new);
+        JsonObject minimalInvocationGraph = createMinimalInvocationGraph(staticPropertyMap);
+
+        // send invocation request to python
+        invoke(minimalInvocationGraph);
+    }
+
+    @Override
+    public void onDetach() throws SpRuntimeException {
+        // send detach request to python to stop processor with invocationId
+        detach();
     }
 }
