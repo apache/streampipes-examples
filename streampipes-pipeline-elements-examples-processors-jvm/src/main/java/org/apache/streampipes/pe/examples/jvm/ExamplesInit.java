@@ -54,6 +54,7 @@ public class ExamplesInit extends StandaloneModelSubmitter {
             .add(new ColorPickerExampleController())
             .add(new CollectionMappingExample())
             .add(new NestedListRequirementsController())
+            .add(new TwoStreamsMappingExample())
 
             .add(new AppendOutputController())
             .add(new CustomOutputController())
