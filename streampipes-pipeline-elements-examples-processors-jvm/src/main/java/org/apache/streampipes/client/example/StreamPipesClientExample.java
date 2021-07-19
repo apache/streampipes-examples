@@ -29,7 +29,8 @@ import org.apache.streampipes.model.template.PipelineElementTemplate;
 
 import java.util.List;
 
-public class StreamPipesClientExample {
+public class
+StreamPipesClientExample {
 
   public static void main(String[] args) {
 
@@ -43,7 +44,7 @@ public class StreamPipesClientExample {
     StreamPipesClient client = StreamPipesClient
             .create("localhost", 80, credentials, true);
 
-    // Get all pipeliens
+    // Get all pipelines
     List<Pipeline> pipelines = client.pipelines().all();
 
     // Start a pipeline
