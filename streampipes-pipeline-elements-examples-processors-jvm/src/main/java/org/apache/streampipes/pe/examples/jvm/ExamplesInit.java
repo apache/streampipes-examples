@@ -17,59 +17,60 @@
  */
 package org.apache.streampipes.pe.examples.jvm;
 
-import org.apache.streampipes.container.init.DeclarersSingleton;
+import org.apache.streampipes.container.model.SpServiceDefinition;
+import org.apache.streampipes.container.model.SpServiceDefinitionBuilder;
 import org.apache.streampipes.container.standalone.init.StandaloneModelSubmitter;
 import org.apache.streampipes.dataformat.json.JsonDataFormatFactory;
 import org.apache.streampipes.messaging.jms.SpJmsProtocolFactory;
 import org.apache.streampipes.messaging.kafka.SpKafkaProtocolFactory;
-import org.apache.streampipes.pe.examples.jvm.config.ExamplesJvmConfig;
 import org.apache.streampipes.pe.examples.jvm.engine.ExampleExternalEngineController;
-import org.apache.streampipes.pe.examples.jvm.outputstrategy.AppendOutputController;
-import org.apache.streampipes.pe.examples.jvm.outputstrategy.CustomOutputController;
-import org.apache.streampipes.pe.examples.jvm.outputstrategy.CustomTransformOutputController;
-import org.apache.streampipes.pe.examples.jvm.outputstrategy.FixedOutputController;
-import org.apache.streampipes.pe.examples.jvm.outputstrategy.KeepOutputController;
-import org.apache.streampipes.pe.examples.jvm.outputstrategy.TransformOutputController;
+import org.apache.streampipes.pe.examples.jvm.outputstrategy.*;
 import org.apache.streampipes.pe.examples.jvm.requirements.NestedListRequirementsController;
 import org.apache.streampipes.pe.examples.jvm.staticproperty.*;
 
 public class ExamplesInit extends StandaloneModelSubmitter {
 
   public static void main(String[] args) {
-    DeclarersSingleton
-            .getInstance()
-            .add(new TextParameterExampleController())
-            .add(new NumberParameterExampleController())
-            .add(new NumberParameterWithRangeExampleController())
-            .add(new UnaryMappingPropertyExampleController())
-            .add(new NaryMappingPropertyExampleController())
-            .add(new SingleValueSelectionExampleController())
-            .add(new MultiValueSelectionExampleController())
-            .add(new CollectionExampleController())
-            .add(new RuntimeResolvableSingleValue())
-            .add(new RuntimeResolvableAnyStaticPropertyController())
-            .add(new StaticPropertyAlternativesController())
-            .add(new SecretStaticPropertyExampleController())
-            .add(new CodeInputExampleController())
-            .add(new ColorPickerExampleController())
-            .add(new CollectionMappingExample())
-            .add(new NestedListRequirementsController())
-            .add(new TwoStreamsMappingExample())
+    new ExamplesInit().init();
+  }
 
-            .add(new AppendOutputController())
-            .add(new CustomOutputController())
-            .add(new FixedOutputController())
-            .add(new CustomTransformOutputController())
-            .add(new TransformOutputController())
-            .add(new KeepOutputController())
-            .add(new CollectionMappingGroupExample())
+  @Override
+  public SpServiceDefinition provideServiceDefinition() {
+    return SpServiceDefinitionBuilder.create("org.apache.streampipes.processors.examples.jvm",
+            "StreamPipes Code Examples",
+            "",
+            8090)
+            .registerMessagingProtocols(new SpKafkaProtocolFactory(), new SpJmsProtocolFactory())
+            .registerMessagingFormats(new JsonDataFormatFactory())
+            .registerPipelineElement(new TextParameterExampleController())
+            .registerPipelineElement(new NumberParameterExampleController())
+            .registerPipelineElement(new NumberParameterWithRangeExampleController())
+            .registerPipelineElement(new UnaryMappingPropertyExampleController())
+            .registerPipelineElement(new NaryMappingPropertyExampleController())
+            .registerPipelineElement(new SingleValueSelectionExampleController())
+            .registerPipelineElement(new MultiValueSelectionExampleController())
+            .registerPipelineElement(new CollectionExampleController())
+            .registerPipelineElement(new RuntimeResolvableSingleValue())
+            .registerPipelineElement(new RuntimeResolvableAnyStaticPropertyController())
+            .registerPipelineElement(new StaticPropertyAlternativesController())
+            .registerPipelineElement(new SecretStaticPropertyExampleController())
+            .registerPipelineElement(new CodeInputExampleController())
+            .registerPipelineElement(new ColorPickerExampleController())
+            .registerPipelineElement(new CollectionMappingExample())
+            .registerPipelineElement(new NestedListRequirementsController())
+            .registerPipelineElement(new TwoStreamsMappingExample())
 
-            .add(new ExampleExternalEngineController());
+            .registerPipelineElement(new AppendOutputController())
+            .registerPipelineElement(new CustomOutputController())
+            .registerPipelineElement(new FixedOutputController())
+            .registerPipelineElement(new CustomTransformOutputController())
+            .registerPipelineElement(new TransformOutputController())
+            .registerPipelineElement(new KeepOutputController())
+            .registerPipelineElement(new CollectionMappingGroupExample())
 
-    DeclarersSingleton.getInstance().registerDataFormat(new JsonDataFormatFactory());
-    DeclarersSingleton.getInstance().registerProtocol(new SpKafkaProtocolFactory());
-    DeclarersSingleton.getInstance().registerProtocol(new SpJmsProtocolFactory());
+            .registerPipelineElement(new ExampleExternalEngineController())
+            .build();
 
-    new ExamplesInit().init(ExamplesJvmConfig.INSTANCE);
+
   }
 }

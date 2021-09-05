@@ -14,6 +14,8 @@ import org.apache.streampipes.wrapper.standalone.declarer.StandaloneEventProcess
 public class CodeInputExampleController extends StandaloneEventProcessingDeclarer<DummyParameters> {
 
   private static final String CODE_KEY = "code-key";
+  private static final String CODE_PYTHON_KEY = "code-python-key";
+  private static final String CODE_EMPTY_KEY = "code-empty-key";
 
   @Override
   public DataProcessorDescription declareModel() {
@@ -28,7 +30,13 @@ public class CodeInputExampleController extends StandaloneEventProcessingDeclare
             .supportedFormats(SupportedFormats.jsonFormat())
 
             // create a required code block
-            .requiredCodeblock(Labels.from(CODE_KEY, "Code", ""), CodeLanguage.Javascript)
+            .requiredCodeblock(Labels.from(CODE_KEY, "Code JS", ""), CodeLanguage.Javascript)
+
+            // python example
+            .requiredCodeblock(Labels.from(CODE_PYTHON_KEY, "Code Python", ""), CodeLanguage.Python)
+
+            // no specific language
+            .requiredCodeblock(Labels.from(CODE_EMPTY_KEY, "Any Code", ""), CodeLanguage.None)
 
             .build();
   }
