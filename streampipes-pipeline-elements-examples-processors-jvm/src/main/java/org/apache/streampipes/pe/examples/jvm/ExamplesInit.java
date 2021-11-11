@@ -59,6 +59,7 @@ public class ExamplesInit extends StandaloneModelSubmitter {
             .registerPipelineElement(new CollectionMappingExample())
             .registerPipelineElement(new NestedListRequirementsController())
             .registerPipelineElement(new TwoStreamsMappingExample())
+            .registerPipelineElement(new CompactRuntimeResolvableSingleValueProcessor())
 
             .registerPipelineElement(new AppendOutputController())
             .registerPipelineElement(new CustomOutputController())

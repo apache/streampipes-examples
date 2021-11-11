@@ -20,6 +20,7 @@ package org.apache.streampipes.client.example;
 import org.apache.commons.collections.MapUtils;
 import org.apache.streampipes.client.StreamPipesClient;
 import org.apache.streampipes.client.StreamPipesCredentials;
+import org.apache.streampipes.client.credentials.CredentialsProvider;
 import org.apache.streampipes.client.live.KafkaConfig;
 import org.apache.streampipes.model.SpDataStream;
 import org.apache.streampipes.model.graph.DataSinkInvocation;
@@ -37,8 +38,8 @@ StreamPipesClientExample {
     // First, go to the StreamPipes UI and create an API key (user -> profile in the upper right corner)
     
     // Create credentials by providing a user (the email) and the API key
-    StreamPipesCredentials credentials = StreamPipesCredentials
-            .from(System.getenv("user"), System.getenv("apiKey"));
+    CredentialsProvider credentials = StreamPipesCredentials
+            .withApiKey(System.getenv("user"), System.getenv("apiKey"));
 
     // Create an instance of the StreamPipes client
     StreamPipesClient client = StreamPipesClient

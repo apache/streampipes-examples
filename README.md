@@ -18,10 +18,10 @@
 
 # StreamPipes
 
-Apache StreamPipes (incubating) A self-service (Industrial) IoT toolbox to enable non-technical users to connect
+Apache StreamPipes (incubating) A self-service (Industrial) IoT toolbox to enable non-technical userAccounts to connect
 , analyze and explore IoT data streams.
 
-It leverages non-technical users to quickly define and execute processing pipelines based on an easily extensible 
+It leverages non-technical userAccounts to quickly define and execute processing pipelines based on an easily extensible 
 toolbox of data sources, data processors and data sinks.
 
 Learn more about StreamPipes at [https://streampipes.apache.org/](https://streampipes.apache.org/)

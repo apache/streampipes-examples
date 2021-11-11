@@ -17,35 +17,36 @@
  */
 package org.apache.streampipes.client.example;
 
-import org.apache.commons.collections.MapUtils;
 import org.apache.streampipes.client.StreamPipesClient;
 import org.apache.streampipes.client.StreamPipesCredentials;
-import org.apache.streampipes.model.SpDataStream;
+import org.apache.streampipes.client.credentials.CredentialsProvider;
 import org.apache.streampipes.model.pipeline.Pipeline;
-import org.apache.streampipes.model.pipeline.PipelineOperationStatus;
 
 import java.util.List;
 
 public class Example {
 
   public static void main(String[] args) {
-    StreamPipesCredentials credentials = StreamPipesCredentials
-            .from(System.getenv("user"), System.getenv("apiKey"));
+//    CredentialsProvider credentials = StreamPipesCredentials
+//            .withApiKey(System.getenv("user"), System.getenv("apiKey"));
+
+    CredentialsProvider credentials = StreamPipesCredentials.withServiceToken("sp-service-client", "my-apache-streampipes-secret-key-change-me");
 
     // Create an instance of the StreamPipes client
     StreamPipesClient client = StreamPipesClient
-            .create("localhost", 80, credentials, true);
+            .create("localhost", 8082, credentials, true);
 
     // Get all pipelines
     List<Pipeline> pipelines = client.pipelines().all();
+    System.out.println(pipelines.size());
 
-    // Start a pipeline
-    PipelineOperationStatus message = client.pipelines().start(pipelines.get(0));
-
-    // Get all data streams
-    List<SpDataStream> dataStreams = client.streams().all();
-
-    // Subscribe to a data stream
-    client.streams().subscribe(dataStreams.get(0), event -> MapUtils.debugPrint(System.out, "event", event.getRaw()));
+//    // Start a pipeline
+//    PipelineOperationStatus message = client.pipelines().start(pipelines.get(0));
+//
+//    // Get all data streams
+//    List<SpDataStream> dataStreams = client.streams().all();
+//
+//    // Subscribe to a data stream
+//    client.streams().subscribe(dataStreams.get(0), event -> MapUtils.debugPrint(System.out, "event", event.getRaw()));
   }
 }
