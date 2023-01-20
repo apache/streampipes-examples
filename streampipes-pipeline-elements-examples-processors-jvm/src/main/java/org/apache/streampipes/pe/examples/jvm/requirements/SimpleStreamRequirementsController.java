@@ -47,8 +47,8 @@ public class SimpleStreamRequirementsController extends StandaloneEventProcessin
                     .requiredProperty(EpRequirements.anyProperty()) // any field allowed (no restriction)
                     .requiredProperty(EpRequirements.timestampReq())  // any timestamp field
 
-                    .requiredProperty(EpRequirements.domainPropertyReq(SO.Latitude))
-                    .requiredProperty(EpRequirements.domainPropertyReq(SO.Longitude))
+                    .requiredProperty(EpRequirements.domainPropertyReq(SO.LATITUDE))
+                    .requiredProperty(EpRequirements.domainPropertyReq(SO.LONGITUDE))
                     .build())
 
 

@@ -48,7 +48,7 @@ public class AppendOutputController extends StandaloneEventProcessingDeclarer<Du
             .supportedFormats(SupportedFormats.jsonFormat())
 
             .outputStrategy(OutputStrategies.append(EpProperties.integerEp(Labels.from("avg",
-                    "The average value", ""), "avg", SO.Number)))
+                    "The average value", ""), "avg", SO.NUMBER)))
 
             .build();
   }

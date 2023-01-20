@@ -17,18 +17,44 @@
  */
 package org.apache.streampipes.pe.examples.jvm;
 
-import org.apache.streampipes.container.model.SpServiceDefinition;
-import org.apache.streampipes.container.model.SpServiceDefinitionBuilder;
-import org.apache.streampipes.container.standalone.init.StandaloneModelSubmitter;
+
 import org.apache.streampipes.dataformat.json.JsonDataFormatFactory;
+import org.apache.streampipes.extensions.management.model.SpServiceDefinition;
+import org.apache.streampipes.extensions.management.model.SpServiceDefinitionBuilder;
 import org.apache.streampipes.messaging.jms.SpJmsProtocolFactory;
 import org.apache.streampipes.messaging.kafka.SpKafkaProtocolFactory;
 import org.apache.streampipes.pe.examples.jvm.engine.ExampleExternalEngineController;
-import org.apache.streampipes.pe.examples.jvm.outputstrategy.*;
+import org.apache.streampipes.pe.examples.jvm.outputstrategy.AppendOutputController;
+import org.apache.streampipes.pe.examples.jvm.outputstrategy.CustomOutputController;
+import org.apache.streampipes.pe.examples.jvm.outputstrategy.CustomTransformOutputController;
+import org.apache.streampipes.pe.examples.jvm.outputstrategy.FixedOutputController;
+import org.apache.streampipes.pe.examples.jvm.outputstrategy.KeepOutputController;
+import org.apache.streampipes.pe.examples.jvm.outputstrategy.TransformOutputController;
 import org.apache.streampipes.pe.examples.jvm.requirements.NestedListRequirementsController;
-import org.apache.streampipes.pe.examples.jvm.staticproperty.*;
+import org.apache.streampipes.pe.examples.jvm.staticproperty.CodeInputExampleController;
+import org.apache.streampipes.pe.examples.jvm.staticproperty.CollectionExampleController;
+import org.apache.streampipes.pe.examples.jvm.staticproperty.CollectionMappingExample;
+import org.apache.streampipes.pe.examples.jvm.staticproperty.CollectionMappingGroupExample;
+import org.apache.streampipes.pe.examples.jvm.staticproperty.ColorPickerExampleController;
+import org.apache.streampipes.pe.examples.jvm.staticproperty.CompactRuntimeResolvableSingleValueProcessor;
+import org.apache.streampipes.pe.examples.jvm.staticproperty.MultiValueSelectionExampleController;
+import org.apache.streampipes.pe.examples.jvm.staticproperty.NaryMappingPropertyExampleController;
+import org.apache.streampipes.pe.examples.jvm.staticproperty.NumberParameterExampleController;
+import org.apache.streampipes.pe.examples.jvm.staticproperty.NumberParameterWithRangeExampleController;
+import org.apache.streampipes.pe.examples.jvm.staticproperty.RuntimeResolvableAnyStaticPropertyController;
+import org.apache.streampipes.pe.examples.jvm.staticproperty.RuntimeResolvableSingleValue;
+import org.apache.streampipes.pe.examples.jvm.staticproperty.SecretStaticPropertyExampleController;
+import org.apache.streampipes.pe.examples.jvm.staticproperty.SingleValueSelectionExampleController;
+import org.apache.streampipes.pe.examples.jvm.staticproperty.StaticPropertyAlternativesController;
+import org.apache.streampipes.pe.examples.jvm.staticproperty.TextParameterExampleController;
+import org.apache.streampipes.pe.examples.jvm.staticproperty.TreeInputSink;
+import org.apache.streampipes.pe.examples.jvm.staticproperty.TwoStreamsMappingExample;
+import org.apache.streampipes.pe.examples.jvm.staticproperty.UnaryMappingPropertyExampleController;
+import org.apache.streampipes.service.extensions.ExtensionsModelSubmitter;
+import org.apache.streampipes.tutorial.VehicleStream;
 
-public class ExamplesInit extends StandaloneModelSubmitter {
+
+public class ExamplesInit extends ExtensionsModelSubmitter {
 
   public static void main(String[] args) {
     new ExamplesInit().init();
@@ -40,37 +66,40 @@ public class ExamplesInit extends StandaloneModelSubmitter {
             "StreamPipes Code Examples",
             "",
             8090)
-            .registerMessagingProtocols(new SpKafkaProtocolFactory(), new SpJmsProtocolFactory())
-            .registerMessagingFormats(new JsonDataFormatFactory())
-            .registerPipelineElement(new TextParameterExampleController())
-            .registerPipelineElement(new NumberParameterExampleController())
-            .registerPipelineElement(new NumberParameterWithRangeExampleController())
-            .registerPipelineElement(new UnaryMappingPropertyExampleController())
-            .registerPipelineElement(new NaryMappingPropertyExampleController())
-            .registerPipelineElement(new SingleValueSelectionExampleController())
-            .registerPipelineElement(new MultiValueSelectionExampleController())
-            .registerPipelineElement(new CollectionExampleController())
-            .registerPipelineElement(new RuntimeResolvableSingleValue())
-            .registerPipelineElement(new RuntimeResolvableAnyStaticPropertyController())
-            .registerPipelineElement(new StaticPropertyAlternativesController())
-            .registerPipelineElement(new SecretStaticPropertyExampleController())
-            .registerPipelineElement(new CodeInputExampleController())
-            .registerPipelineElement(new ColorPickerExampleController())
-            .registerPipelineElement(new CollectionMappingExample())
-            .registerPipelineElement(new NestedListRequirementsController())
-            .registerPipelineElement(new TwoStreamsMappingExample())
-            .registerPipelineElement(new CompactRuntimeResolvableSingleValueProcessor())
+        .registerMessagingProtocols(new SpKafkaProtocolFactory(), new SpJmsProtocolFactory())
+        .registerMessagingFormats(new JsonDataFormatFactory())
+        .registerPipelineElement(new TextParameterExampleController())
+        .registerPipelineElement(new NumberParameterExampleController())
+        .registerPipelineElement(new NumberParameterWithRangeExampleController())
+        .registerPipelineElement(new UnaryMappingPropertyExampleController())
+        .registerPipelineElement(new NaryMappingPropertyExampleController())
+        .registerPipelineElement(new SingleValueSelectionExampleController())
+        .registerPipelineElement(new MultiValueSelectionExampleController())
+        .registerPipelineElement(new CollectionExampleController())
+        .registerPipelineElement(new RuntimeResolvableSingleValue())
+        .registerPipelineElement(new RuntimeResolvableAnyStaticPropertyController())
+        .registerPipelineElement(new StaticPropertyAlternativesController())
+        .registerPipelineElement(new SecretStaticPropertyExampleController())
+        .registerPipelineElement(new CodeInputExampleController())
+        .registerPipelineElement(new ColorPickerExampleController())
+        .registerPipelineElement(new CollectionMappingExample())
+        .registerPipelineElement(new NestedListRequirementsController())
+        .registerPipelineElement(new TwoStreamsMappingExample())
+        .registerPipelineElement(new CompactRuntimeResolvableSingleValueProcessor())
+        .registerPipelineElement(new TreeInputSink())
 
-            .registerPipelineElement(new AppendOutputController())
-            .registerPipelineElement(new CustomOutputController())
-            .registerPipelineElement(new FixedOutputController())
-            .registerPipelineElement(new CustomTransformOutputController())
-            .registerPipelineElement(new TransformOutputController())
-            .registerPipelineElement(new KeepOutputController())
-            .registerPipelineElement(new CollectionMappingGroupExample())
+        .registerPipelineElement(new AppendOutputController())
+        .registerPipelineElement(new CustomOutputController())
+        .registerPipelineElement(new FixedOutputController())
+        .registerPipelineElement(new CustomTransformOutputController())
+        .registerPipelineElement(new TransformOutputController())
+        .registerPipelineElement(new KeepOutputController())
+        .registerPipelineElement(new CollectionMappingGroupExample())
 
-            .registerPipelineElement(new ExampleExternalEngineController())
-            .build();
+        .registerPipelineElement(new ExampleExternalEngineController())
+
+        .registerPipelineElement(new VehicleStream())
+        .build();
 
 
   }

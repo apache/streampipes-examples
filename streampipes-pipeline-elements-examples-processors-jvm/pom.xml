@@ -23,7 +23,7 @@
     <parent>
         <artifactId>streampipes-pipeline-elements-examples</artifactId>
         <groupId>org.apache.streampipes</groupId>
-        <version>0.69.0-SNAPSHOT</version>
+        <version>0.71.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -32,35 +32,16 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.streampipes</groupId>
+            <artifactId>streampipes-sdk-bundle</artifactId>
+            <version>0.91.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.streampipes</groupId>
             <artifactId>streampipes-wrapper-standalone</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.streampipes</groupId>
-            <artifactId>streampipes-sdk</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.streampipes</groupId>
-            <artifactId>streampipes-container-standalone</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.streampipes</groupId>
-            <artifactId>streampipes-config</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.streampipes</groupId>
-            <artifactId>streampipes-dataformat-json</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.streampipes</groupId>
-            <artifactId>streampipes-messaging-kafka</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.streampipes</groupId>
-            <artifactId>streampipes-messaging-jms</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.streampipes</groupId>
-            <artifactId>streampipes-client</artifactId>
+            <artifactId>streampipes-sources</artifactId>
         </dependency>
     </dependencies>
 

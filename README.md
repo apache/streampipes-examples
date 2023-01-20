@@ -18,7 +18,7 @@
 
 # StreamPipes
 
-Apache StreamPipes (incubating) A self-service (Industrial) IoT toolbox to enable non-technical userAccounts to connect
+Apache StreamPipes is a self-service (Industrial) IoT toolbox to enable non-technical userAccounts to connect
 , analyze and explore IoT data streams.
 
 It leverages non-technical userAccounts to quickly define and execute processing pipelines based on an easily extensible 
@@ -32,7 +32,7 @@ Read the full documentation at [https://streampipes.apache.org/docs](https://str
 
 The pipeline elements defined in this repository **do nothing** - they only serve to provide examples on how pipeline 
 elements can be created with StreamPipes. The examples are referenced in the SDK guide 
-(https://docs.streampipes.org/docs/dev-guide-introduction)
+(https://streampipes.apache.org/docs)
 
 If you are looking for **real** pipeline elements that can be installed in StreamPipes, have a look at 
-[StreamPipes Pipeline Elements](https://www.github.com/apache/incubator-streampipes-extensions).
+[StreamPipes Pipeline Elements](https://github.com/apache/streampipes/tree/dev/streampipes-extensions).

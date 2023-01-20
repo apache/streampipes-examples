@@ -44,7 +44,7 @@ public class PythonGreeterProcessor extends StreamPipesExternalDataProcessor {
                 .requiredTextParameter(Labels.withId(GREETER_KEY), "greeting")
                 // append greeting to event stream
                 .outputStrategy(OutputStrategies.append(
-                        EpProperties.stringEp(Labels.empty(),"greeting", SO.Text)))
+                        EpProperties.stringEp(Labels.empty(),"greeting", SO.TEXT)))
                 // NOTE: currently one Kafka transport protocol is supported
                 .supportedProtocols(SupportedProtocols.kafka())
                 .supportedFormats(SupportedFormats.jsonFormat())

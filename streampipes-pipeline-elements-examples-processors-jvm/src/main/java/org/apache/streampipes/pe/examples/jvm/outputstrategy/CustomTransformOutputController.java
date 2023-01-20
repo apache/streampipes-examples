@@ -18,7 +18,7 @@
 package org.apache.streampipes.pe.examples.jvm.outputstrategy;
 
 import org.apache.streampipes.commons.exceptions.SpRuntimeException;
-import org.apache.streampipes.container.api.ResolvesContainerProvidedOutputStrategy;
+import org.apache.streampipes.extensions.api.runtime.ResolvesContainerProvidedOutputStrategy;
 import org.apache.streampipes.model.graph.DataProcessorDescription;
 import org.apache.streampipes.model.graph.DataProcessorInvocation;
 import org.apache.streampipes.model.schema.EventSchema;
@@ -42,7 +42,7 @@ import java.util.Arrays;
 
 public class CustomTransformOutputController extends
         StandaloneEventProcessingDeclarer<DummyParameters> implements
-        ResolvesContainerProvidedOutputStrategy<DataProcessorInvocation, ProcessingElementParameterExtractor> {
+    ResolvesContainerProvidedOutputStrategy<DataProcessorInvocation, ProcessingElementParameterExtractor> {
 
   @Override
   public DataProcessorDescription declareModel() {
@@ -71,6 +71,6 @@ public class CustomTransformOutputController extends
   public EventSchema resolveOutputStrategy(DataProcessorInvocation processingElement, ProcessingElementParameterExtractor parameterExtractor) throws SpRuntimeException {
     return new EventSchema(Arrays
             .asList(EpProperties
-                    .stringEp(Labels.from("runtime", "I was added at runtime", ""), "runtime", SO.Text)));
+                    .stringEp(Labels.from("runtime", "I was added at runtime", ""), "runtime", SO.TEXT)));
   }
 }

@@ -17,8 +17,7 @@
  */
 package org.apache.streampipes.pe.examples.jvm.staticproperty;
 
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.streampipes.container.api.ResolvesContainerProvidedOptions;
+import org.apache.streampipes.extensions.api.runtime.ResolvesContainerProvidedOptions;
 import org.apache.streampipes.model.graph.DataProcessorDescription;
 import org.apache.streampipes.model.graph.DataProcessorInvocation;
 import org.apache.streampipes.model.staticproperty.Option;
@@ -35,6 +34,8 @@ import org.apache.streampipes.sdk.helpers.SupportedFormats;
 import org.apache.streampipes.sdk.helpers.SupportedProtocols;
 import org.apache.streampipes.wrapper.standalone.ConfiguredEventProcessor;
 import org.apache.streampipes.wrapper.standalone.declarer.StandaloneEventProcessingDeclarer;
+
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 import java.util.Arrays;
 import java.util.List;

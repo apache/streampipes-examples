@@ -48,7 +48,7 @@ public class FixedOutputController extends StandaloneEventProcessingDeclarer<Dum
             .supportedFormats(SupportedFormats.jsonFormat())
 
             .outputStrategy(OutputStrategies.fixed(EpProperties.timestampProperty("timestamp"),
-                    EpProperties.doubleEp(Labels.from("avg", "Average value", ""), "avg", SO.Number)))
+                    EpProperties.doubleEp(Labels.from("avg", "Average value", ""), "avg", SO.NUMBER)))
 
             .build();
   }

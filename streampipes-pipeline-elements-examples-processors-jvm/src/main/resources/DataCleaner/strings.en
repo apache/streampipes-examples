@@ -1,0 +1,14 @@
+org.stefan_ana.pe.processor.cleaner.DataCleaner.title=Fill Property/ies With Dynamic Value
+org.stefan_ana.pe.processor.cleaner.DataCleaner.description=Performs filling of missing property/ies with dynamically determined values.
+
+timestamps-property-key.title=Timestamps
+timestamps-property-key.description=List of timestamps for received properties
+
+fill-values-key.title=Properties
+fill-values-key.description=Properties which will be populated with missing values
+
+group-key.title=
+group-key.description=
+
+property-key.title=Property
+property-key.description=
