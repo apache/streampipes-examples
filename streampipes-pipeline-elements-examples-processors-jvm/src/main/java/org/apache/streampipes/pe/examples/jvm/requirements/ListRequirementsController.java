@@ -17,44 +17,61 @@
  */
 package org.apache.streampipes.pe.examples.jvm.requirements;
 
-import org.apache.streampipes.model.graph.DataProcessorDescription;
-import org.apache.streampipes.model.graph.DataProcessorInvocation;
-import org.apache.streampipes.pe.examples.jvm.base.DummyParameters;
+import org.apache.streampipes.extensions.api.pe.IStreamPipesDataProcessor;
+import org.apache.streampipes.extensions.api.pe.config.IDataProcessorConfiguration;
+import org.apache.streampipes.extensions.api.pe.context.EventProcessorRuntimeContext;
+import org.apache.streampipes.extensions.api.pe.param.IDataProcessorParameters;
+import org.apache.streampipes.extensions.api.pe.routing.SpOutputCollector;
+import org.apache.streampipes.model.runtime.Event;
 import org.apache.streampipes.sdk.builder.ProcessingElementBuilder;
 import org.apache.streampipes.sdk.builder.StreamRequirementsBuilder;
-import org.apache.streampipes.sdk.extractor.ProcessingElementParameterExtractor;
+import org.apache.streampipes.sdk.builder.processor.DataProcessorConfiguration;
 import org.apache.streampipes.sdk.helpers.EpRequirements;
 import org.apache.streampipes.sdk.helpers.OutputStrategies;
 import org.apache.streampipes.sdk.helpers.SupportedFormats;
 import org.apache.streampipes.sdk.helpers.SupportedProtocols;
 import org.apache.streampipes.sdk.utils.Datatypes;
-import org.apache.streampipes.wrapper.standalone.ConfiguredEventProcessor;
-import org.apache.streampipes.wrapper.standalone.declarer.StandaloneEventProcessingDeclarer;
 
-public class ListRequirementsController extends StandaloneEventProcessingDeclarer<DummyParameters> {
+public class ListRequirementsController implements IStreamPipesDataProcessor {
+
 
   @Override
-  public DataProcessorDescription declareModel() {
-    return ProcessingElementBuilder.create("org.apache.streampipes.examples.requirements" +
-            ".list", "List requirements specification examples", "")
+  public IDataProcessorConfiguration declareConfig() {
+    return DataProcessorConfiguration.create(
+        ListRequirementsController::new,
+        ProcessingElementBuilder.create("org.apache.streampipes.examples.requirements" +
+                ".list", "List requirements specification examples", "")
             .requiredStream(StreamRequirementsBuilder.
-                    create()
-                    .requiredProperty(EpRequirements.listRequirement(Datatypes.Integer))
-                    .requiredProperty(EpRequirements.listRequirement(Datatypes.Double))
-                    .requiredProperty(EpRequirements.listRequirement(Datatypes.Boolean))
-                    .requiredProperty(EpRequirements.listRequirement(Datatypes.String))
-                    .build())
+                create()
+                .requiredProperty(EpRequirements.listRequirement(Datatypes.Integer))
+                .requiredProperty(EpRequirements.listRequirement(Datatypes.Double))
+                .requiredProperty(EpRequirements.listRequirement(Datatypes.Boolean))
+                .requiredProperty(EpRequirements.listRequirement(Datatypes.String))
+                .build())
 
 
             .supportedProtocols(SupportedProtocols.kafka())
             .supportedFormats(SupportedFormats.jsonFormat())
             .outputStrategy(OutputStrategies.keep())
 
-            .build();
+            .build()
+    );
   }
 
   @Override
-  public ConfiguredEventProcessor<DummyParameters> onInvocation(DataProcessorInvocation graph, ProcessingElementParameterExtractor extractor) {
-    return null;
+  public void onPipelineStarted(IDataProcessorParameters params, SpOutputCollector collector, EventProcessorRuntimeContext runtimeContext) {
+
   }
+
+  @Override
+  public void onEvent(Event event, SpOutputCollector collector) {
+
+  }
+
+  @Override
+  public void onPipelineStopped() {
+
+  }
+
+
 }

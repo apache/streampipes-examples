@@ -17,45 +17,53 @@
  */
 package org.apache.streampipes.pe.examples.jvm.outputstrategy;
 
-import org.apache.streampipes.model.graph.DataProcessorDescription;
-import org.apache.streampipes.model.graph.DataProcessorInvocation;
-import org.apache.streampipes.pe.examples.jvm.base.DummyEngine;
-import org.apache.streampipes.pe.examples.jvm.base.DummyParameters;
+import org.apache.streampipes.extensions.api.pe.IStreamPipesDataProcessor;
+import org.apache.streampipes.extensions.api.pe.context.EventProcessorRuntimeContext;
+import org.apache.streampipes.extensions.api.pe.param.IDataProcessorParameters;
+import org.apache.streampipes.extensions.api.pe.routing.SpOutputCollector;
+import org.apache.streampipes.model.runtime.Event;
 import org.apache.streampipes.sdk.builder.ProcessingElementBuilder;
 import org.apache.streampipes.sdk.builder.StreamRequirementsBuilder;
-import org.apache.streampipes.sdk.extractor.ProcessingElementParameterExtractor;
+import org.apache.streampipes.sdk.builder.processor.DataProcessorConfiguration;
 import org.apache.streampipes.sdk.helpers.EpRequirements;
 import org.apache.streampipes.sdk.helpers.OutputStrategies;
 import org.apache.streampipes.sdk.helpers.SupportedFormats;
 import org.apache.streampipes.sdk.helpers.SupportedProtocols;
-import org.apache.streampipes.wrapper.standalone.ConfiguredEventProcessor;
-import org.apache.streampipes.wrapper.standalone.declarer.StandaloneEventProcessingDeclarer;
 
 import java.util.List;
 
-public class CustomOutputController extends StandaloneEventProcessingDeclarer<DummyParameters> {
+public class CustomOutputController implements IStreamPipesDataProcessor {
 
   @Override
-  public DataProcessorDescription declareModel() {
-    return ProcessingElementBuilder.create("org.apache.streampipes.examples.outputstrategy" +
-            ".custom", "Custom output example", "")
+  public DataProcessorConfiguration declareConfig() {
+    return DataProcessorConfiguration.create(
+        CustomOutputController::new,
+        ProcessingElementBuilder.create("org.apache.streampipes.examples.outputstrategy" +
+                ".custom", "Custom output example", "")
             .requiredStream(StreamRequirementsBuilder.
-                    create()
-                    .requiredProperty(EpRequirements.anyProperty())
-                    .build())
+                create()
+                .requiredProperty(EpRequirements.anyProperty())
+                .build())
             .supportedProtocols(SupportedProtocols.kafka())
             .supportedFormats(SupportedFormats.jsonFormat())
 
             .outputStrategy(OutputStrategies.custom())
-
-            .build();
+            .build()
+    );
   }
 
   @Override
-  public ConfiguredEventProcessor<DummyParameters> onInvocation(DataProcessorInvocation graph, ProcessingElementParameterExtractor extractor) {
+  public void onPipelineStarted(IDataProcessorParameters params, SpOutputCollector collector, EventProcessorRuntimeContext runtimeContext) {
+    List<String> outputSelectors = params.extractor().outputKeySelectors();
+  }
 
-    List<String> outputSelectors = extractor.outputKeySelectors();
+  @Override
+  public void onEvent(Event event, SpOutputCollector collector) {
 
-    return new ConfiguredEventProcessor<>(new DummyParameters(graph), DummyEngine::new);
+  }
+
+  @Override
+  public void onPipelineStopped() {
+
   }
 }

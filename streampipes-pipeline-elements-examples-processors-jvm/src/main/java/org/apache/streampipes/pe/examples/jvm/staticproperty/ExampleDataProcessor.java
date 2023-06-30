@@ -15,6 +15,7 @@
  * limitations under the License.
  *
  */
+
 package org.apache.streampipes.pe.examples.jvm.staticproperty;
 
 import org.apache.streampipes.extensions.api.pe.IStreamPipesDataProcessor;
@@ -22,44 +23,33 @@ import org.apache.streampipes.extensions.api.pe.context.EventProcessorRuntimeCon
 import org.apache.streampipes.extensions.api.pe.param.IDataProcessorParameters;
 import org.apache.streampipes.extensions.api.pe.routing.SpOutputCollector;
 import org.apache.streampipes.model.runtime.Event;
-import org.apache.streampipes.model.schema.PropertyScope;
 import org.apache.streampipes.sdk.builder.ProcessingElementBuilder;
 import org.apache.streampipes.sdk.builder.StreamRequirementsBuilder;
 import org.apache.streampipes.sdk.builder.processor.DataProcessorConfiguration;
 import org.apache.streampipes.sdk.helpers.EpRequirements;
 import org.apache.streampipes.sdk.helpers.Labels;
 import org.apache.streampipes.sdk.helpers.OutputStrategies;
-import org.apache.streampipes.sdk.helpers.SupportedFormats;
-import org.apache.streampipes.sdk.helpers.SupportedProtocols;
 
-import java.util.List;
 
-public class NaryMappingPropertyExampleController implements IStreamPipesDataProcessor {
-
+public class ExampleDataProcessor implements IStreamPipesDataProcessor {
   @Override
   public DataProcessorConfiguration declareConfig() {
     return DataProcessorConfiguration.create(
-        NaryMappingPropertyExampleController::new,
-        ProcessingElementBuilder.create("org.apache.streampipes.examples.staticproperty" +
-                ".mappingnary", "Nary Mapping Property Example", "")
+        ExampleDataProcessor::new,
+        ProcessingElementBuilder.create("my-example-processor", "Number Parameter With Range", "")
             .requiredStream(StreamRequirementsBuilder.
                 create()
-                .requiredPropertyWithNaryMapping(EpRequirements.numberReq(),
-                    Labels.from("mp-key", "My Mapping", ""),
-                    PropertyScope.NONE)
+                .requiredProperty(EpRequirements.anyProperty())
                 .build())
             .outputStrategy(OutputStrategies.keep())
-            .supportedProtocols(SupportedProtocols.kafka())
-            .supportedFormats(SupportedFormats.jsonFormat())
-
+            .requiredIntegerParameter(Labels.from("key", "Integer Parameter", ""), 0, 100, 1)
             .build()
     );
   }
 
   @Override
   public void onPipelineStarted(IDataProcessorParameters params, SpOutputCollector collector, EventProcessorRuntimeContext runtimeContext) {
-    // Extract the mapping property value
-    List<String> mappingPropertySelectors = params.extractor().mappingPropertyValues("mp-key");
+    // called when pipeline is started
 
   }
 

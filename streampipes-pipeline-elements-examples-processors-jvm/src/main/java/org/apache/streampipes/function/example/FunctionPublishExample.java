@@ -18,6 +18,7 @@
 
 package org.apache.streampipes.function.example;
 
+import org.apache.streampipes.extensions.api.pe.routing.SpOutputCollector;
 import org.apache.streampipes.model.function.FunctionId;
 import org.apache.streampipes.model.runtime.Event;
 import org.apache.streampipes.model.schema.PropertyScope;
@@ -27,7 +28,6 @@ import org.apache.streampipes.sdk.helpers.Formats;
 import org.apache.streampipes.sdk.helpers.Labels;
 import org.apache.streampipes.sdk.helpers.Protocols;
 import org.apache.streampipes.vocabulary.SO;
-import org.apache.streampipes.wrapper.routing.SpOutputCollector;
 import org.apache.streampipes.wrapper.standalone.function.FunctionConfig;
 import org.apache.streampipes.wrapper.standalone.function.FunctionConfigBuilder;
 import org.apache.streampipes.wrapper.standalone.function.FunctionContext;
@@ -49,7 +49,7 @@ public class FunctionPublishExample extends StreamPipesFunction {
 
   @Override
   public List<String> requiredStreamIds() {
-    return List.of("urn:streampipes.apache.org:eventstream:EtMUkN");
+    return List.of("urn:streampipes.apache.org:eventstream:plSEjN");
   }
 
   @Override
@@ -85,7 +85,7 @@ public class FunctionPublishExample extends StreamPipesFunction {
                 SO.TEXT,
                 PropertyScope.MEASUREMENT_PROPERTY))
             .format(Formats.jsonFormat())
-            .protocol(Protocols.kafka("localhost", 9094, STREAM_APP_ID))
+            .protocol(Protocols.kafka("nats", 9094, STREAM_APP_ID))
             .build())
         .build();
   }

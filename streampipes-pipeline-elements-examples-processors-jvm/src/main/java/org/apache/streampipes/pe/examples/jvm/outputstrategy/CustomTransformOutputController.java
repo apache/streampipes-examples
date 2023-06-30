@@ -18,15 +18,19 @@
 package org.apache.streampipes.pe.examples.jvm.outputstrategy;
 
 import org.apache.streampipes.commons.exceptions.SpRuntimeException;
+import org.apache.streampipes.extensions.api.pe.IStreamPipesDataProcessor;
+import org.apache.streampipes.extensions.api.pe.config.IDataProcessorConfiguration;
+import org.apache.streampipes.extensions.api.pe.context.EventProcessorRuntimeContext;
+import org.apache.streampipes.extensions.api.pe.param.IDataProcessorParameters;
+import org.apache.streampipes.extensions.api.pe.routing.SpOutputCollector;
 import org.apache.streampipes.extensions.api.runtime.ResolvesContainerProvidedOutputStrategy;
-import org.apache.streampipes.model.graph.DataProcessorDescription;
 import org.apache.streampipes.model.graph.DataProcessorInvocation;
+import org.apache.streampipes.model.runtime.Event;
 import org.apache.streampipes.model.schema.EventSchema;
 import org.apache.streampipes.model.schema.PropertyScope;
-import org.apache.streampipes.pe.examples.jvm.base.DummyEngine;
-import org.apache.streampipes.pe.examples.jvm.base.DummyParameters;
 import org.apache.streampipes.sdk.builder.ProcessingElementBuilder;
 import org.apache.streampipes.sdk.builder.StreamRequirementsBuilder;
+import org.apache.streampipes.sdk.builder.processor.DataProcessorConfiguration;
 import org.apache.streampipes.sdk.extractor.ProcessingElementParameterExtractor;
 import org.apache.streampipes.sdk.helpers.EpProperties;
 import org.apache.streampipes.sdk.helpers.EpRequirements;
@@ -35,42 +39,58 @@ import org.apache.streampipes.sdk.helpers.OutputStrategies;
 import org.apache.streampipes.sdk.helpers.SupportedFormats;
 import org.apache.streampipes.sdk.helpers.SupportedProtocols;
 import org.apache.streampipes.vocabulary.SO;
-import org.apache.streampipes.wrapper.standalone.ConfiguredEventProcessor;
-import org.apache.streampipes.wrapper.standalone.declarer.StandaloneEventProcessingDeclarer;
 
-import java.util.Arrays;
+import java.util.List;
 
-public class CustomTransformOutputController extends
-        StandaloneEventProcessingDeclarer<DummyParameters> implements
-    ResolvesContainerProvidedOutputStrategy<DataProcessorInvocation, ProcessingElementParameterExtractor> {
+public class CustomTransformOutputController implements
+    IStreamPipesDataProcessor, ResolvesContainerProvidedOutputStrategy<DataProcessorInvocation, ProcessingElementParameterExtractor> {
+
 
   @Override
-  public DataProcessorDescription declareModel() {
-    return ProcessingElementBuilder.create("org.apache.streampipes.examples.outputstrategy" +
-            ".customtransform", "Custom transform output example example", "")
+  public IDataProcessorConfiguration declareConfig() {
+    return DataProcessorConfiguration.create(
+        CustomTransformOutputController::new,
+        ProcessingElementBuilder.create("org.apache.streampipes.examples.outputstrategy" +
+                ".customtransform", "Custom transform output example example", "")
             .requiredStream(StreamRequirementsBuilder.
-                    create()
-                    .requiredPropertyWithUnaryMapping(EpRequirements.stringReq(), Labels.from
-                            ("str", "The date property as a string", ""), PropertyScope.NONE)
-                    .build())
+                create()
+                .requiredPropertyWithUnaryMapping(EpRequirements.stringReq(), Labels.from
+                    ("str", "The date property as a string", ""), PropertyScope.NONE)
+                .build())
             .supportedProtocols(SupportedProtocols.kafka())
             .supportedFormats(SupportedFormats.jsonFormat())
 
             .outputStrategy(OutputStrategies.customTransformation())
-
-            .build();
+            .build()
+    );
   }
 
   @Override
-  public ConfiguredEventProcessor<DummyParameters> onInvocation(DataProcessorInvocation graph, ProcessingElementParameterExtractor extractor) {
-
-    return new ConfiguredEventProcessor<>(new DummyParameters(graph), DummyEngine::new);
+  public EventSchema resolveOutputStrategy(DataProcessorInvocation processingElement,
+                                           ProcessingElementParameterExtractor parameterExtractor) throws SpRuntimeException {
+    return new EventSchema(List.of(
+        EpProperties
+            .stringEp(Labels.from(
+                "runtime",
+                "I was added at runtime",
+                ""), "runtime", SO.TEXT))
+    );
   }
 
   @Override
-  public EventSchema resolveOutputStrategy(DataProcessorInvocation processingElement, ProcessingElementParameterExtractor parameterExtractor) throws SpRuntimeException {
-    return new EventSchema(Arrays
-            .asList(EpProperties
-                    .stringEp(Labels.from("runtime", "I was added at runtime", ""), "runtime", SO.TEXT)));
+  public void onPipelineStarted(IDataProcessorParameters params, SpOutputCollector collector, EventProcessorRuntimeContext runtimeContext) {
+
   }
+
+  @Override
+  public void onEvent(Event event, SpOutputCollector collector) {
+
+  }
+
+  @Override
+  public void onPipelineStopped() {
+
+  }
+
+
 }

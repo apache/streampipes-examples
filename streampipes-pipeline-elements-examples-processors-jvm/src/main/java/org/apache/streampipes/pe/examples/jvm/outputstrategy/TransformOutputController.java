@@ -17,14 +17,16 @@
  */
 package org.apache.streampipes.pe.examples.jvm.outputstrategy;
 
-import org.apache.streampipes.model.graph.DataProcessorDescription;
-import org.apache.streampipes.model.graph.DataProcessorInvocation;
+import org.apache.streampipes.extensions.api.pe.IStreamPipesDataProcessor;
+import org.apache.streampipes.extensions.api.pe.config.IDataProcessorConfiguration;
+import org.apache.streampipes.extensions.api.pe.context.EventProcessorRuntimeContext;
+import org.apache.streampipes.extensions.api.pe.param.IDataProcessorParameters;
+import org.apache.streampipes.extensions.api.pe.routing.SpOutputCollector;
+import org.apache.streampipes.model.runtime.Event;
 import org.apache.streampipes.model.schema.PropertyScope;
-import org.apache.streampipes.pe.examples.jvm.base.DummyEngine;
-import org.apache.streampipes.pe.examples.jvm.base.DummyParameters;
 import org.apache.streampipes.sdk.builder.ProcessingElementBuilder;
 import org.apache.streampipes.sdk.builder.StreamRequirementsBuilder;
-import org.apache.streampipes.sdk.extractor.ProcessingElementParameterExtractor;
+import org.apache.streampipes.sdk.builder.processor.DataProcessorConfiguration;
 import org.apache.streampipes.sdk.helpers.EpRequirements;
 import org.apache.streampipes.sdk.helpers.Labels;
 import org.apache.streampipes.sdk.helpers.OutputStrategies;
@@ -32,36 +34,46 @@ import org.apache.streampipes.sdk.helpers.SupportedFormats;
 import org.apache.streampipes.sdk.helpers.SupportedProtocols;
 import org.apache.streampipes.sdk.helpers.TransformOperations;
 import org.apache.streampipes.sdk.utils.Datatypes;
-import org.apache.streampipes.wrapper.standalone.ConfiguredEventProcessor;
-import org.apache.streampipes.wrapper.standalone.declarer.StandaloneEventProcessingDeclarer;
 
 import java.util.List;
 
-public class TransformOutputController extends StandaloneEventProcessingDeclarer<DummyParameters> {
+public class TransformOutputController implements IStreamPipesDataProcessor {
 
   @Override
-  public DataProcessorDescription declareModel() {
-    return ProcessingElementBuilder.create("org.apache.streampipes.examples.outputstrategy" +
-            ".transform", "Transform output example example", "")
+  public IDataProcessorConfiguration declareConfig() {
+    return DataProcessorConfiguration.create(
+        TransformOutputController::new,
+        ProcessingElementBuilder.create("org.apache.streampipes.examples.outputstrategy" +
+                ".transform", "Transform output example example", "")
             .requiredStream(StreamRequirementsBuilder.
-                    create()
-                    .requiredPropertyWithUnaryMapping(EpRequirements.stringReq(), Labels.from
-                            ("str", "The date property as a string", ""), PropertyScope.NONE)
-                    .build())
+                create()
+                .requiredPropertyWithUnaryMapping(EpRequirements.stringReq(), Labels.from
+                    ("str", "The date property as a string", ""), PropertyScope.NONE)
+                .build())
             .supportedProtocols(SupportedProtocols.kafka())
             .supportedFormats(SupportedFormats.jsonFormat())
 
             .outputStrategy(OutputStrategies.transform(TransformOperations
-                    .staticDatatypeTransformation("str", Datatypes.Long)))
+                .staticDatatypeTransformation("str", Datatypes.Long)))
 
-            .build();
+            .build()
+    );
   }
 
   @Override
-  public ConfiguredEventProcessor<DummyParameters> onInvocation(DataProcessorInvocation graph, ProcessingElementParameterExtractor extractor) {
-
-    List<String> outputSelectors = extractor.outputKeySelectors();
-
-    return new ConfiguredEventProcessor<>(new DummyParameters(graph), DummyEngine::new);
+  public void onPipelineStarted(IDataProcessorParameters params, SpOutputCollector collector, EventProcessorRuntimeContext runtimeContext) {
+    List<String> outputSelectors = params.extractor().outputKeySelectors();
   }
+
+  @Override
+  public void onEvent(Event event, SpOutputCollector collector) {
+
+  }
+
+  @Override
+  public void onPipelineStopped() {
+
+  }
+
+
 }

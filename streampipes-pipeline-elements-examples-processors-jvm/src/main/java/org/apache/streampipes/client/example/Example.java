@@ -19,7 +19,7 @@ package org.apache.streampipes.client.example;
 
 import org.apache.streampipes.client.StreamPipesClient;
 import org.apache.streampipes.client.StreamPipesCredentials;
-import org.apache.streampipes.client.credentials.CredentialsProvider;
+import org.apache.streampipes.client.api.credentials.CredentialsProvider;
 import org.apache.streampipes.model.pipeline.Pipeline;
 
 import java.util.List;

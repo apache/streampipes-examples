@@ -17,40 +17,54 @@
  */
 package org.apache.streampipes.pe.examples.jvm.requirements;
 
-import org.apache.streampipes.model.graph.DataProcessorDescription;
-import org.apache.streampipes.model.graph.DataProcessorInvocation;
+import org.apache.streampipes.extensions.api.pe.IStreamPipesDataProcessor;
+import org.apache.streampipes.extensions.api.pe.config.IDataProcessorConfiguration;
+import org.apache.streampipes.extensions.api.pe.context.EventProcessorRuntimeContext;
+import org.apache.streampipes.extensions.api.pe.param.IDataProcessorParameters;
+import org.apache.streampipes.extensions.api.pe.routing.SpOutputCollector;
+import org.apache.streampipes.model.runtime.Event;
 import org.apache.streampipes.model.schema.PropertyScope;
-import org.apache.streampipes.pe.examples.jvm.base.DummyParameters;
 import org.apache.streampipes.sdk.builder.ProcessingElementBuilder;
 import org.apache.streampipes.sdk.builder.StreamRequirementsBuilder;
-import org.apache.streampipes.sdk.extractor.ProcessingElementParameterExtractor;
+import org.apache.streampipes.sdk.builder.processor.DataProcessorConfiguration;
 import org.apache.streampipes.sdk.helpers.EpRequirements;
 import org.apache.streampipes.sdk.helpers.Labels;
 import org.apache.streampipes.sdk.helpers.OutputStrategies;
-import org.apache.streampipes.wrapper.standalone.ConfiguredEventProcessor;
-import org.apache.streampipes.wrapper.standalone.declarer.StandaloneEventProcessingDeclarer;
 
-public class NestedListRequirementsController extends StandaloneEventProcessingDeclarer<DummyParameters> {
-
+public class NestedListRequirementsController implements IStreamPipesDataProcessor {
+  
   @Override
-  public DataProcessorDescription declareModel() {
-    return ProcessingElementBuilder.create("org.apache.streampipes.examples.requirements.nestedlist",
-            "Nested list mapping example", "")
+  public IDataProcessorConfiguration declareConfig() {
+    return DataProcessorConfiguration.create(
+        NestedListRequirementsController::new,
+        ProcessingElementBuilder.create("org.apache.streampipes.examples.requirements.nestedlist",
+                "Nested list mapping example", "")
             .requiredStream(StreamRequirementsBuilder.
-                    create()
-                    .requiredPropertyWithUnaryMapping(EpRequirements.nestedListRequirement(EpRequirements.stringReq()),
-                            Labels.from("key-value", "Key", ""),
-                                    PropertyScope.NONE)
-                    .requiredPropertyWithUnaryMapping(EpRequirements.nestedListRequirement(EpRequirements.integerReq()),
-                            Labels.from("count-value", "Count", ""),
-                            PropertyScope.NONE)
-                    .build())
+                create()
+                .requiredPropertyWithUnaryMapping(EpRequirements.nestedListRequirement(EpRequirements.stringReq()),
+                    Labels.from("key-value", "Key", ""),
+                    PropertyScope.NONE)
+                .requiredPropertyWithUnaryMapping(EpRequirements.nestedListRequirement(EpRequirements.integerReq()),
+                    Labels.from("count-value", "Count", ""),
+                    PropertyScope.NONE)
+                .build())
             .outputStrategy(OutputStrategies.keep())
-            .build();
+            .build()
+    );
   }
 
   @Override
-  public ConfiguredEventProcessor<DummyParameters> onInvocation(DataProcessorInvocation graph, ProcessingElementParameterExtractor extractor) {
-    return null;
+  public void onPipelineStarted(IDataProcessorParameters params, SpOutputCollector collector, EventProcessorRuntimeContext runtimeContext) {
+
+  }
+
+  @Override
+  public void onEvent(Event event, SpOutputCollector collector) {
+
+  }
+
+  @Override
+  public void onPipelineStopped() {
+
   }
 }

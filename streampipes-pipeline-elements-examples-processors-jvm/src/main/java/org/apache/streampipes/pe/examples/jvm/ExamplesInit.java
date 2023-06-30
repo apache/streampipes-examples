@@ -23,7 +23,6 @@ import org.apache.streampipes.extensions.management.model.SpServiceDefinition;
 import org.apache.streampipes.extensions.management.model.SpServiceDefinitionBuilder;
 import org.apache.streampipes.messaging.jms.SpJmsProtocolFactory;
 import org.apache.streampipes.messaging.kafka.SpKafkaProtocolFactory;
-import org.apache.streampipes.pe.examples.jvm.engine.ExampleExternalEngineController;
 import org.apache.streampipes.pe.examples.jvm.outputstrategy.AppendOutputController;
 import org.apache.streampipes.pe.examples.jvm.outputstrategy.CustomOutputController;
 import org.apache.streampipes.pe.examples.jvm.outputstrategy.CustomTransformOutputController;
@@ -95,8 +94,6 @@ public class ExamplesInit extends ExtensionsModelSubmitter {
         .registerPipelineElement(new TransformOutputController())
         .registerPipelineElement(new KeepOutputController())
         .registerPipelineElement(new CollectionMappingGroupExample())
-
-        .registerPipelineElement(new ExampleExternalEngineController())
 
         .registerPipelineElement(new VehicleStream())
         .build();

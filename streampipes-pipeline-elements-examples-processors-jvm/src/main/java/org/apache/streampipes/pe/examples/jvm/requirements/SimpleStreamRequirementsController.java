@@ -17,50 +17,64 @@
  */
 package org.apache.streampipes.pe.examples.jvm.requirements;
 
-import org.apache.streampipes.model.graph.DataProcessorDescription;
-import org.apache.streampipes.model.graph.DataProcessorInvocation;
-import org.apache.streampipes.pe.examples.jvm.base.DummyParameters;
+import org.apache.streampipes.extensions.api.pe.IStreamPipesDataProcessor;
+import org.apache.streampipes.extensions.api.pe.config.IDataProcessorConfiguration;
+import org.apache.streampipes.extensions.api.pe.context.EventProcessorRuntimeContext;
+import org.apache.streampipes.extensions.api.pe.param.IDataProcessorParameters;
+import org.apache.streampipes.extensions.api.pe.routing.SpOutputCollector;
+import org.apache.streampipes.model.runtime.Event;
 import org.apache.streampipes.sdk.builder.ProcessingElementBuilder;
 import org.apache.streampipes.sdk.builder.StreamRequirementsBuilder;
-import org.apache.streampipes.sdk.extractor.ProcessingElementParameterExtractor;
+import org.apache.streampipes.sdk.builder.processor.DataProcessorConfiguration;
 import org.apache.streampipes.sdk.helpers.EpRequirements;
 import org.apache.streampipes.sdk.helpers.OutputStrategies;
 import org.apache.streampipes.sdk.helpers.SupportedFormats;
 import org.apache.streampipes.sdk.helpers.SupportedProtocols;
 import org.apache.streampipes.vocabulary.SO;
-import org.apache.streampipes.wrapper.standalone.ConfiguredEventProcessor;
-import org.apache.streampipes.wrapper.standalone.declarer.StandaloneEventProcessingDeclarer;
 
-public class SimpleStreamRequirementsController extends StandaloneEventProcessingDeclarer<DummyParameters> {
+public class SimpleStreamRequirementsController implements IStreamPipesDataProcessor {
 
   @Override
-  public DataProcessorDescription declareModel() {
-    return ProcessingElementBuilder.create("org.apache.streampipes.examples.requirements" +
-            ".simple", "Simple requirements specification examples", "")
+  public IDataProcessorConfiguration declareConfig() {
+    return DataProcessorConfiguration.create(
+        SimpleStreamRequirementsController::new,
+        ProcessingElementBuilder.create("org.apache.streampipes.examples.requirements" +
+                ".simple", "Simple requirements specification examples", "")
             .requiredStream(StreamRequirementsBuilder.
-                    create()
-                    .requiredProperty(EpRequirements.numberReq()) // any number
-                    .requiredProperty(EpRequirements.doubleReq()) // any field of type double
-                    .requiredProperty(EpRequirements.booleanReq()) // any field of type boolean
-                    .requiredProperty(EpRequirements.integerReq()) // any field of type integer
-                    .requiredProperty(EpRequirements.stringReq()) // any field of type string
-                    .requiredProperty(EpRequirements.anyProperty()) // any field allowed (no restriction)
-                    .requiredProperty(EpRequirements.timestampReq())  // any timestamp field
+                create()
+                .requiredProperty(EpRequirements.numberReq()) // any number
+                .requiredProperty(EpRequirements.doubleReq()) // any field of type double
+                .requiredProperty(EpRequirements.booleanReq()) // any field of type boolean
+                .requiredProperty(EpRequirements.integerReq()) // any field of type integer
+                .requiredProperty(EpRequirements.stringReq()) // any field of type string
+                .requiredProperty(EpRequirements.anyProperty()) // any field allowed (no restriction)
+                .requiredProperty(EpRequirements.timestampReq())  // any timestamp field
 
-                    .requiredProperty(EpRequirements.domainPropertyReq(SO.LATITUDE))
-                    .requiredProperty(EpRequirements.domainPropertyReq(SO.LONGITUDE))
-                    .build())
+                .requiredProperty(EpRequirements.domainPropertyReq(SO.LATITUDE))
+                .requiredProperty(EpRequirements.domainPropertyReq(SO.LONGITUDE))
+                .build())
 
 
             .supportedProtocols(SupportedProtocols.kafka())
             .supportedFormats(SupportedFormats.jsonFormat())
             .outputStrategy(OutputStrategies.keep())
 
-            .build();
+            .build()
+    );
   }
 
   @Override
-  public ConfiguredEventProcessor<DummyParameters> onInvocation(DataProcessorInvocation graph, ProcessingElementParameterExtractor extractor) {
-    return null;
+  public void onPipelineStarted(IDataProcessorParameters params, SpOutputCollector collector, EventProcessorRuntimeContext runtimeContext) {
+
+  }
+
+  @Override
+  public void onEvent(Event event, SpOutputCollector collector) {
+
+  }
+
+  @Override
+  public void onPipelineStopped() {
+
   }
 }

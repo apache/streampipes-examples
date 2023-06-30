@@ -17,49 +17,61 @@
  */
 package org.apache.streampipes.pe.examples.jvm.staticproperty;
 
-import org.apache.streampipes.model.graph.DataProcessorDescription;
-import org.apache.streampipes.model.graph.DataProcessorInvocation;
+import org.apache.streampipes.extensions.api.pe.IStreamPipesDataProcessor;
+import org.apache.streampipes.extensions.api.pe.context.EventProcessorRuntimeContext;
+import org.apache.streampipes.extensions.api.pe.param.IDataProcessorParameters;
+import org.apache.streampipes.extensions.api.pe.routing.SpOutputCollector;
+import org.apache.streampipes.model.runtime.Event;
 import org.apache.streampipes.model.schema.PropertyScope;
-import org.apache.streampipes.pe.examples.jvm.base.DummyEngine;
-import org.apache.streampipes.pe.examples.jvm.base.DummyParameters;
 import org.apache.streampipes.sdk.StaticProperties;
 import org.apache.streampipes.sdk.builder.ProcessingElementBuilder;
 import org.apache.streampipes.sdk.builder.StreamRequirementsBuilder;
-import org.apache.streampipes.sdk.extractor.ProcessingElementParameterExtractor;
-import org.apache.streampipes.sdk.helpers.*;
-import org.apache.streampipes.wrapper.standalone.ConfiguredEventProcessor;
-import org.apache.streampipes.wrapper.standalone.declarer.StandaloneEventProcessingDeclarer;
+import org.apache.streampipes.sdk.builder.processor.DataProcessorConfiguration;
+import org.apache.streampipes.sdk.helpers.EpRequirements;
+import org.apache.streampipes.sdk.helpers.Labels;
+import org.apache.streampipes.sdk.helpers.OutputStrategies;
+import org.apache.streampipes.sdk.helpers.RequirementsSelector;
 
 import java.util.List;
 
-public class CollectionMappingExample extends
-        StandaloneEventProcessingDeclarer<DummyParameters> {
+public class CollectionMappingExample implements IStreamPipesDataProcessor {
 
   private static final String MAPPING_PROPERTY_ID = "mapping-property";
   private static final String FIELDS_KEY = "fields";
 
   @Override
-  public DataProcessorDescription declareModel() {
-    return ProcessingElementBuilder.create("org.apache.streampipes.examples.collection.mapping",
-            "Collection with mapping properties", "")
+  public DataProcessorConfiguration declareConfig() {
+    return DataProcessorConfiguration.create(
+        CollectionMappingExample::new,
+        ProcessingElementBuilder.create("org.apache.streampipes.examples.collection.mapping",
+                "Collection with mapping properties", "")
             .requiredStream(StreamRequirementsBuilder.
-                    create()
-                    .requiredProperty(EpRequirements.withMappingPropertyId(MAPPING_PROPERTY_ID, EpRequirements.numberReq()))
-                    .build())
+                create()
+                .requiredProperty(EpRequirements.withMappingPropertyId(MAPPING_PROPERTY_ID, EpRequirements.numberReq()))
+                .build())
             .requiredCollection(Labels.from(FIELDS_KEY, "Field Mappings", ""),
-                    StaticProperties.mappingPropertyUnary(Labels.from(MAPPING_PROPERTY_ID, "Field", ""),
-                            RequirementsSelector.FIRST_INPUT_STREAM,
-                            PropertyScope.NONE))
+                StaticProperties.mappingPropertyUnary(Labels.from(MAPPING_PROPERTY_ID, "Field", ""),
+                    RequirementsSelector.FIRST_INPUT_STREAM,
+                    PropertyScope.NONE))
             .outputStrategy(OutputStrategies.keep())
-            .build();
+            .build()
+    );
   }
 
   @Override
-  public ConfiguredEventProcessor<DummyParameters> onInvocation(DataProcessorInvocation graph, ProcessingElementParameterExtractor extractor) {
-
+  public void onPipelineStarted(IDataProcessorParameters params, SpOutputCollector collector, EventProcessorRuntimeContext runtimeContext) {
     // Extract the mapping property value
-    List<String> selectedMappings = extractor.getUnaryMappingsFromCollection(FIELDS_KEY);
+    List<String> selectedMappings = params.extractor().getUnaryMappingsFromCollection(FIELDS_KEY);
 
-    return new ConfiguredEventProcessor<>(new DummyParameters(graph), DummyEngine::new);
+  }
+
+  @Override
+  public void onEvent(Event event, SpOutputCollector collector) {
+
+  }
+
+  @Override
+  public void onPipelineStopped() {
+
   }
 }

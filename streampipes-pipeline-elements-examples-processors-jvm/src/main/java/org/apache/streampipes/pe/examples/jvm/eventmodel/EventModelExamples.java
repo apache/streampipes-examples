@@ -18,15 +18,16 @@
 package org.apache.streampipes.pe.examples.jvm.eventmodel;
 
 import org.apache.streampipes.commons.exceptions.SpRuntimeException;
+import org.apache.streampipes.extensions.api.pe.IStreamPipesDataProcessor;
+import org.apache.streampipes.extensions.api.pe.config.IDataProcessorConfiguration;
+import org.apache.streampipes.extensions.api.pe.context.EventProcessorRuntimeContext;
+import org.apache.streampipes.extensions.api.pe.param.IDataProcessorParameters;
+import org.apache.streampipes.extensions.api.pe.routing.SpOutputCollector;
 import org.apache.streampipes.model.runtime.Event;
-import org.apache.streampipes.pe.examples.jvm.base.DummyParameters;
-import org.apache.streampipes.wrapper.context.EventProcessorRuntimeContext;
-import org.apache.streampipes.wrapper.routing.SpOutputCollector;
-import org.apache.streampipes.wrapper.runtime.EventProcessor;
 
 import java.util.List;
 
-public class EventModelExamples implements EventProcessor<DummyParameters> {
+public class EventModelExamples implements IStreamPipesDataProcessor {
 
   /**
    * Example event:
@@ -41,9 +42,13 @@ public class EventModelExamples implements EventProcessor<DummyParameters> {
   private String lastValueSelector;
 
   @Override
-  public void onInvocation(DummyParameters parameters, SpOutputCollector spOutputCollector, EventProcessorRuntimeContext runtimeContext) throws SpRuntimeException {
+  public IDataProcessorConfiguration declareConfig() {
+    return null;
+  }
 
-    // usually, the fields such as temperatureSelector would be retrieved from the parameter class
+  @Override
+  public void onPipelineStarted(IDataProcessorParameters params, SpOutputCollector collector, EventProcessorRuntimeContext runtimeContext) {
+
   }
 
   @Override
@@ -66,7 +71,9 @@ public class EventModelExamples implements EventProcessor<DummyParameters> {
   }
 
   @Override
-  public void onDetach() throws SpRuntimeException {
+  public void onPipelineStopped() {
 
   }
+
+
 }

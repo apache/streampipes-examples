@@ -17,25 +17,24 @@
  */
 package org.apache.streampipes.pe.examples.jvm.staticproperty;
 
+import org.apache.streampipes.extensions.api.pe.IStreamPipesDataProcessor;
+import org.apache.streampipes.extensions.api.pe.context.EventProcessorRuntimeContext;
+import org.apache.streampipes.extensions.api.pe.param.IDataProcessorParameters;
+import org.apache.streampipes.extensions.api.pe.routing.SpOutputCollector;
 import org.apache.streampipes.model.DataProcessorType;
-import org.apache.streampipes.model.graph.DataProcessorDescription;
-import org.apache.streampipes.model.graph.DataProcessorInvocation;
+import org.apache.streampipes.model.runtime.Event;
 import org.apache.streampipes.model.schema.PropertyScope;
-import org.apache.streampipes.pe.examples.jvm.base.DummyEngine;
-import org.apache.streampipes.pe.examples.jvm.base.DummyParameters;
 import org.apache.streampipes.sdk.builder.ProcessingElementBuilder;
 import org.apache.streampipes.sdk.builder.StreamRequirementsBuilder;
-import org.apache.streampipes.sdk.extractor.ProcessingElementParameterExtractor;
+import org.apache.streampipes.sdk.builder.processor.DataProcessorConfiguration;
 import org.apache.streampipes.sdk.helpers.EpRequirements;
 import org.apache.streampipes.sdk.helpers.Labels;
 import org.apache.streampipes.sdk.helpers.OutputStrategies;
 import org.apache.streampipes.sdk.utils.Assets;
-import org.apache.streampipes.wrapper.standalone.ConfiguredEventProcessor;
-import org.apache.streampipes.wrapper.standalone.declarer.StandaloneEventProcessingDeclarer;
 
 import java.util.List;
 
-public class TwoStreamsMappingExample extends StandaloneEventProcessingDeclarer<DummyParameters> {
+public class TwoStreamsMappingExample  implements IStreamPipesDataProcessor {
 
   private static final String KEY_STREAM_1 = "stream-1-key";
   private static final String PROPERTIES_STREAM_1 = "stream-1-properties";
@@ -44,43 +43,54 @@ public class TwoStreamsMappingExample extends StandaloneEventProcessingDeclarer<
 
   private static final String ID = "org.apache.streampipes.examples.staticproperty.twostreamsmapping";
   @Override
-  public DataProcessorDescription declareModel() {
-    return ProcessingElementBuilder.create(ID, "Two Streams", "")
+  public DataProcessorConfiguration declareConfig() {
+    return DataProcessorConfiguration.create(
+        TwoStreamsMappingExample::new,
+        ProcessingElementBuilder.create(ID, "Two Streams", "")
             .withAssets(Assets.DOCUMENTATION, Assets.ICON)
             .category(DataProcessorType.ALGORITHM)
             .requiredStream(StreamRequirementsBuilder
-                    .create()
-                    .requiredPropertyWithNaryMapping(
-                            EpRequirements.numberReq(),
-                            Labels.from(PROPERTIES_STREAM_1, "S1 Properties", ""),
-                            PropertyScope.NONE)
-                    .requiredPropertyWithUnaryMapping(EpRequirements.numberReq(),
-                            Labels.from(KEY_STREAM_1, "S1 Key", ""), PropertyScope.NONE)
-                    .build())
+                .create()
+                .requiredPropertyWithNaryMapping(
+                    EpRequirements.numberReq(),
+                    Labels.from(PROPERTIES_STREAM_1, "S1 Properties", ""),
+                    PropertyScope.NONE)
+                .requiredPropertyWithUnaryMapping(EpRequirements.numberReq(),
+                    Labels.from(KEY_STREAM_1, "S1 Key", ""), PropertyScope.NONE)
+                .build())
             .requiredStream(StreamRequirementsBuilder
-                    .create()
-                    .requiredPropertyWithNaryMapping(EpRequirements.numberReq(),
-                            Labels.from(PROPERTIES_STREAM_2, "S2 Properties", ""),
-                            PropertyScope.NONE)
-                    .requiredPropertyWithUnaryMapping(EpRequirements.numberReq(),
-                            Labels.from(KEY_STREAM_2, "S2 Key", ""),
-                            PropertyScope.NONE)
-                    .build())
+                .create()
+                .requiredPropertyWithNaryMapping(EpRequirements.numberReq(),
+                    Labels.from(PROPERTIES_STREAM_2, "S2 Properties", ""),
+                    PropertyScope.NONE)
+                .requiredPropertyWithUnaryMapping(EpRequirements.numberReq(),
+                    Labels.from(KEY_STREAM_2, "S2 Key", ""),
+                    PropertyScope.NONE)
+                .build())
             .outputStrategy(OutputStrategies.keep())
-            .build();
+            .build()
+    );
+  }
+
+  @Override
+  public void onPipelineStarted(IDataProcessorParameters params, SpOutputCollector collector, EventProcessorRuntimeContext runtimeContext) {
+    var extractor = params.extractor();
+    List<String> selProps1 = extractor.mappingPropertyValues(PROPERTIES_STREAM_1);
+    List<String> selProps = extractor.mappingPropertyValues(PROPERTIES_STREAM_2);
+
+    String selKey1 = extractor.mappingPropertyValue(KEY_STREAM_1);
+    String selKey2 = extractor.mappingPropertyValue(KEY_STREAM_2);
 
   }
 
   @Override
-  public ConfiguredEventProcessor<DummyParameters> onInvocation(DataProcessorInvocation graph, ProcessingElementParameterExtractor extractor) {
+  public void onEvent(Event event, SpOutputCollector collector) {
 
-      List<String> selProps1 = extractor.mappingPropertyValues(PROPERTIES_STREAM_1);
-      List<String> selProps = extractor.mappingPropertyValues(PROPERTIES_STREAM_2);
+  }
 
-      String selKey1 = extractor.mappingPropertyValue(KEY_STREAM_1);
-      String selKey2 = extractor.mappingPropertyValue(KEY_STREAM_2);
+  @Override
+  public void onPipelineStopped() {
 
-    return new ConfiguredEventProcessor<>(new DummyParameters(graph), DummyEngine::new);
   }
 
 }

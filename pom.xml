@@ -25,18 +25,18 @@
     <parent>
         <groupId>org.apache.streampipes</groupId>
         <artifactId>streampipes-parent</artifactId>
-        <version>0.91.0-SNAPSHOT</version>
+        <version>0.93.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>streampipes-pipeline-elements-examples</artifactId>
     <packaging>pom</packaging>
-    <version>0.71.0-SNAPSHOT</version>
+    <version>0.93.0-SNAPSHOT</version>
     <modules>
         <module>streampipes-pipeline-elements-examples-processors-jvm</module>
     </modules>
 
     <properties>
-        <streampipes.version>0.91.0-SNAPSHOT</streampipes.version>
+        <streampipes.version>0.93.0-SNAPSHOT</streampipes.version>
         <lightcouch.version>0.1.8</lightcouch.version>
 
         <maven-shade-plugin.version>3.0.0</maven-shade-plugin.version>
@@ -61,11 +61,6 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.streampipes</groupId>
-                <artifactId>streampipes-container-standalone</artifactId>
-                <version>${streampipes.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.streampipes</groupId>
                 <artifactId>streampipes-wrapper-standalone</artifactId>
                 <version>${streampipes.version}</version>
             </dependency>
@@ -81,33 +76,13 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.streampipes</groupId>
-                <artifactId>streampipes-config</artifactId>
-                <version>${streampipes.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.streampipes</groupId>
-                <artifactId>streampipes-dataformat-json</artifactId>
-                <version>${streampipes.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.streampipes</groupId>
-                <artifactId>streampipes-messaging-kafka</artifactId>
-                <version>${streampipes.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.streampipes</groupId>
-                <artifactId>streampipes-messaging-jms</artifactId>
+                <artifactId>streampipes-sdk-bundle</artifactId>
                 <version>${streampipes.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.lightcouch</groupId>
                 <artifactId>lightcouch</artifactId>
                 <version>${lightcouch.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.streampipes</groupId>
-                <artifactId>streampipes-measurement-units</artifactId>
-                <version>${streampipes.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.streampipes</groupId>

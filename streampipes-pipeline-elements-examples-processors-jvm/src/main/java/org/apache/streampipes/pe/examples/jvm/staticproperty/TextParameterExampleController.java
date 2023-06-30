@@ -17,33 +17,34 @@
  */
 package org.apache.streampipes.pe.examples.jvm.staticproperty;
 
-import org.apache.streampipes.model.graph.DataProcessorDescription;
-import org.apache.streampipes.model.graph.DataProcessorInvocation;
-import org.apache.streampipes.pe.examples.jvm.base.DummyEngine;
-import org.apache.streampipes.pe.examples.jvm.base.DummyParameters;
+import org.apache.streampipes.extensions.api.pe.IStreamPipesDataProcessor;
+import org.apache.streampipes.extensions.api.pe.context.EventProcessorRuntimeContext;
+import org.apache.streampipes.extensions.api.pe.param.IDataProcessorParameters;
+import org.apache.streampipes.extensions.api.pe.routing.SpOutputCollector;
+import org.apache.streampipes.model.runtime.Event;
 import org.apache.streampipes.sdk.builder.ProcessingElementBuilder;
 import org.apache.streampipes.sdk.builder.StreamRequirementsBuilder;
-import org.apache.streampipes.sdk.extractor.ProcessingElementParameterExtractor;
+import org.apache.streampipes.sdk.builder.processor.DataProcessorConfiguration;
 import org.apache.streampipes.sdk.helpers.EpRequirements;
 import org.apache.streampipes.sdk.helpers.Labels;
 import org.apache.streampipes.sdk.helpers.OutputStrategies;
 import org.apache.streampipes.sdk.helpers.SupportedFormats;
 import org.apache.streampipes.sdk.helpers.SupportedProtocols;
-import org.apache.streampipes.wrapper.standalone.ConfiguredEventProcessor;
-import org.apache.streampipes.wrapper.standalone.declarer.StandaloneEventProcessingDeclarer;
 
-public class TextParameterExampleController extends StandaloneEventProcessingDeclarer<DummyParameters> {
+public class TextParameterExampleController  implements IStreamPipesDataProcessor {
 
   private static final String SP_KEY = "my-example-key";
 
   @Override
-  public DataProcessorDescription declareModel() {
-    return ProcessingElementBuilder.create("org.apache.streampipes.examples.staticproperty" +
-            ".textparameter", "Text Parameter Example", "")
+  public DataProcessorConfiguration declareConfig() {
+    return DataProcessorConfiguration.create(
+        TextParameterExampleController::new,
+        ProcessingElementBuilder.create("org.apache.streampipes.examples.staticproperty" +
+                ".textparameter", "Text Parameter Example", "")
             .requiredStream(StreamRequirementsBuilder.
-                    create()
-                    .requiredProperty(EpRequirements.anyProperty())
-                    .build())
+                create()
+                .requiredProperty(EpRequirements.anyProperty())
+                .build())
             .outputStrategy(OutputStrategies.keep())
             .supportedProtocols(SupportedProtocols.kafka())
             .supportedFormats(SupportedFormats.jsonFormat())
@@ -51,17 +52,24 @@ public class TextParameterExampleController extends StandaloneEventProcessingDec
             // create a simple text parameter
             .requiredTextParameter(Labels.from(SP_KEY, "Example Name", "Example Description"))
 
-            .build();
+            .build()
+    );
   }
 
   @Override
-  public ConfiguredEventProcessor<DummyParameters> onInvocation(DataProcessorInvocation graph, ProcessingElementParameterExtractor extractor) {
-
+  public void onPipelineStarted(IDataProcessorParameters params, SpOutputCollector collector, EventProcessorRuntimeContext runtimeContext) {
     // Extract the text parameter value
-    String textParameter = extractor.singleValueParameter(SP_KEY, String.class);
+    String textParameter = params.extractor().singleValueParameter(SP_KEY, String.class);
 
-    // now the text parameter would be added to a parameter class (omitted for this example)
+  }
 
-    return new ConfiguredEventProcessor<>(new DummyParameters(graph), DummyEngine::new);
+  @Override
+  public void onEvent(Event event, SpOutputCollector collector) {
+
+  }
+
+  @Override
+  public void onPipelineStopped() {
+
   }
 }

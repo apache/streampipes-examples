@@ -17,24 +17,24 @@
  */
 package org.apache.streampipes.pe.examples.jvm.staticproperty;
 
-import org.apache.streampipes.commons.exceptions.SpRuntimeException;
+import org.apache.streampipes.commons.exceptions.SpConfigurationException;
+import org.apache.streampipes.extensions.api.extractor.IStaticPropertyExtractor;
+import org.apache.streampipes.extensions.api.pe.IStreamPipesDataProcessor;
+import org.apache.streampipes.extensions.api.pe.context.EventProcessorRuntimeContext;
+import org.apache.streampipes.extensions.api.pe.param.IDataProcessorParameters;
+import org.apache.streampipes.extensions.api.pe.routing.SpOutputCollector;
 import org.apache.streampipes.extensions.api.runtime.ResolvesContainerProvidedOptions;
-import org.apache.streampipes.model.graph.DataProcessorDescription;
 import org.apache.streampipes.model.runtime.Event;
 import org.apache.streampipes.model.staticproperty.Option;
 import org.apache.streampipes.sdk.builder.ProcessingElementBuilder;
 import org.apache.streampipes.sdk.builder.StreamRequirementsBuilder;
-import org.apache.streampipes.sdk.extractor.StaticPropertyExtractor;
+import org.apache.streampipes.sdk.builder.processor.DataProcessorConfiguration;
 import org.apache.streampipes.sdk.helpers.EpRequirements;
 import org.apache.streampipes.sdk.helpers.Labels;
 import org.apache.streampipes.sdk.helpers.Options;
 import org.apache.streampipes.sdk.helpers.OutputStrategies;
 import org.apache.streampipes.sdk.helpers.SupportedFormats;
 import org.apache.streampipes.sdk.helpers.SupportedProtocols;
-import org.apache.streampipes.wrapper.context.EventProcessorRuntimeContext;
-import org.apache.streampipes.wrapper.routing.SpOutputCollector;
-import org.apache.streampipes.wrapper.standalone.ProcessorParams;
-import org.apache.streampipes.wrapper.standalone.StreamPipesDataProcessor;
 
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.List;
 
-public class CompactRuntimeResolvableSingleValueProcessor extends StreamPipesDataProcessor implements ResolvesContainerProvidedOptions {
+public class CompactRuntimeResolvableSingleValueProcessor implements IStreamPipesDataProcessor, ResolvesContainerProvidedOptions {
 
   private static final String KafkaHost = "kafka-host";
   private static final String KafkaPort = "kafka-port";
@@ -51,13 +51,15 @@ public class CompactRuntimeResolvableSingleValueProcessor extends StreamPipesDat
   private static final Logger LOG = LoggerFactory.getLogger(CompactRuntimeResolvableSingleValueProcessor.class);
 
   @Override
-  public DataProcessorDescription declareModel() {
-    return ProcessingElementBuilder.create("org.apache.streampipes.examples.staticproperty" +
-                    ".compactruntimeresolvable", "Compact Runtime-resolvable single value example", "")
+  public DataProcessorConfiguration declareConfig() {
+    return DataProcessorConfiguration.create(
+        CompactRuntimeResolvableSingleValueProcessor::new,
+        ProcessingElementBuilder.create("org.apache.streampipes.examples.staticproperty" +
+                ".compactruntimeresolvable", "Compact Runtime-resolvable single value example", "")
             .requiredStream(StreamRequirementsBuilder.
-                    create()
-                    .requiredProperty(EpRequirements.anyProperty())
-                    .build())
+                create()
+                .requiredProperty(EpRequirements.anyProperty())
+                .build())
             .outputStrategy(OutputStrategies.keep())
             .supportedProtocols(SupportedProtocols.kafka())
             .supportedFormats(SupportedFormats.jsonFormat())
@@ -66,31 +68,33 @@ public class CompactRuntimeResolvableSingleValueProcessor extends StreamPipesDat
 
             // create a single value selection parameter that is resolved at runtime
             .requiredSingleValueSelectionFromContainer(Labels.from("id", "Example Name", "Example " +
-                    "Description"), Arrays.asList(KafkaHost, KafkaPort))
+                "Description"), Arrays.asList(KafkaHost, KafkaPort))
 
-            .build();
+            .build()
+    );
   }
 
   @Override
-  public void onInvocation(ProcessorParams parameters, SpOutputCollector spOutputCollector, EventProcessorRuntimeContext runtimeContext) throws SpRuntimeException {
-    String selectedSingleValue = parameters.extractor().selectedSingleValue("id", String.class);
+  public void onPipelineStarted(IDataProcessorParameters params, SpOutputCollector collector, EventProcessorRuntimeContext runtimeContext) {
+    String selectedSingleValue = params.extractor().selectedSingleValue("id", String.class);
     LOG.info(selectedSingleValue);
+
   }
 
   @Override
-  public void onEvent(Event event,
-                      SpOutputCollector collector) throws SpRuntimeException {
+  public void onEvent(Event event, SpOutputCollector collector) {
     MapUtils.debugPrint(System.out, "event", event.getRaw());
     collector.collect(event);
   }
 
   @Override
-  public void onDetach() throws SpRuntimeException {
+  public void onPipelineStopped() {
 
   }
 
   @Override
-  public List<Option> resolveOptions(String requestId, StaticPropertyExtractor parameterExtractor) {
+  public List<Option> resolveOptions(String staticPropertyInternalName,
+                                     IStaticPropertyExtractor parameterExtractor) throws SpConfigurationException {
     return Options.from("A", "B");
   }
 }
